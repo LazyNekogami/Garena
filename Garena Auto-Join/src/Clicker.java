@@ -7,10 +7,18 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.TimeUnit;
 
-
-public class Clicker {
-	public boolean isRunning = true;
+public class Clicker extends Thread {
+	private volatile boolean isRunning = true;
 	
+	public void finish(){
+		isRunning = false;
+	}
+	
+	Clicker(){
+		setDaemon(true);
+		isRunning = true;
+	}
+
 	private static void doubleClick() {
 		try {
 			Robot r = new Robot();
@@ -23,22 +31,22 @@ public class Clicker {
 			e.printStackTrace();
 		}
 	}
-	
-	private static void clickEnter(){
+
+	private static void clickEnter() {
 		Robot r;
 		try {
 			r = new Robot();
 			r.keyPress(KeyEvent.VK_ENTER);
 			r.keyRelease(KeyEvent.VK_ENTER);
-			
+
 		} catch (AWTException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public static void sleep(int i){
+
+	public static void sleep(int i) {
 		try {
 			TimeUnit.MILLISECONDS.sleep(i);
 		} catch (InterruptedException e) {
@@ -47,26 +55,30 @@ public class Clicker {
 		}
 	}
 
-	public Clicker() {
-		
-		 while(isRunning){
-		PointerInfo a = MouseInfo.getPointerInfo();
-		Point b = a.getLocation();
-		int x = (int) b.getX();
-		int y = (int) b.getY();
-		// System.out.println("x:"+x+" y:"+y);
-		sleep(10000);
-		while(x == b.getX() && y == b.getY()) {
-			doubleClick();
-			sleep(700);
-			clickEnter();
-			sleep(5000);
-			b = MouseInfo.getPointerInfo().getLocation();
+	@Override
+	public void run() {
+		while (true) {
+			if (isRunning) {
+				PointerInfo a = MouseInfo.getPointerInfo();
+				Point b = a.getLocation();
+				int x = (int) b.getX();
+				int y = (int) b.getY();
+				// System.out.println("x:"+x+" y:"+y);
+				sleep(10000);
+				while (x == b.getX() && y == b.getY()) {
+					doubleClick();
+					sleep(700);
+					clickEnter();
+					sleep(5000);
+					b = MouseInfo.getPointerInfo().getLocation();
+				}
+			} else {
+				return;
+			}
+			
+
 		}
-		
-		 }
 
 	}
-
 
 }

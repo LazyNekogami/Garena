@@ -4,6 +4,16 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class gui {
+	private JButton button;
+	
+	private void changeButtonText(){
+		if(button.getText().equals("Start")){
+			button.setText("Finish");
+		}
+		else if(button.getText().equals("Finish")){
+			button.setText("Start");
+		}
+	}
 
 	public gui() {
 		JFrame frame = new JFrame();
@@ -13,21 +23,25 @@ public class gui {
 		frame.setTitle("Garena Auto-Joiner");
 
 		JPanel panel = new JPanel();
-		JButton button = new JButton("Button");
+		button = new JButton("Start");
 		button.addActionListener(new ActionListener() {
-			Clicker cli = null;
+			Clicker myClicker = null;
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (null == cli) {
-					cli = new Clicker();
+				if (myClicker == null || !myClicker.isAlive()) {
+					myClicker = new Clicker();
+					myClicker.start();
+					
 				} else {
-					cli.isRunning = !cli.isRunning;
+					myClicker.finish();
+					
 				}
+				changeButtonText();
 
 			}
 		});
-		
+
 		panel.add(button);
 		panel.setVisible(true);
 		frame.add(panel);
