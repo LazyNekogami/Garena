@@ -10,11 +10,12 @@ import java.util.concurrent.TimeUnit;
 public class Clicker extends Thread {
 	private volatile boolean isRunning = true;
 	
-	public void finish(){
+
+	public void finish() {
 		isRunning = false;
 	}
-	
-	Clicker(){
+
+	Clicker() {
 		setDaemon(true);
 		isRunning = true;
 	}
@@ -65,6 +66,10 @@ public class Clicker extends Thread {
 				int y = (int) b.getY();
 				// System.out.println("x:"+x+" y:"+y);
 				sleep(10000);
+				if (x != MouseInfo.getPointerInfo().getLocation().getX()
+						|| y != MouseInfo.getPointerInfo().getLocation().getY()) {
+					continue;
+				}
 				while (x == b.getX() && y == b.getY()) {
 					doubleClick();
 					sleep(700);
@@ -75,7 +80,6 @@ public class Clicker extends Thread {
 			} else {
 				return;
 			}
-			
 
 		}
 
