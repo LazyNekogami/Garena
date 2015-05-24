@@ -1,7 +1,6 @@
 import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Point;
-import java.awt.PointerInfo;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -9,12 +8,12 @@ import java.util.concurrent.TimeUnit;
 
 public class Clicker extends Thread {
 	private volatile boolean isRunning = true;
-	
-	public void finish(){
+
+	public void finish() {
 		isRunning = false;
 	}
-	
-	Clicker(){
+
+	Clicker() {
 		setDaemon(true);
 		isRunning = true;
 	}
@@ -32,11 +31,22 @@ public class Clicker extends Thread {
 		}
 	}
 
-	private static void clickEnter() {
+	private static void EnterPress() {
 		Robot r;
 		try {
 			r = new Robot();
 			r.keyPress(KeyEvent.VK_ENTER);
+
+		} catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private static void EnterRelease() {
+		Robot r;
+		try {
+			r = new Robot();
 			r.keyRelease(KeyEvent.VK_ENTER);
 
 		} catch (AWTException e) {
@@ -59,23 +69,21 @@ public class Clicker extends Thread {
 	public void run() {
 		while (true) {
 			if (isRunning) {
-				PointerInfo a = MouseInfo.getPointerInfo();
-				Point b = a.getLocation();
+				Point b = MouseInfo.getPointerInfo().getLocation();
 				int x = (int) b.getX();
 				int y = (int) b.getY();
-				// System.out.println("x:"+x+" y:"+y);
-				sleep(10000);
-				while (x == b.getX() && y == b.getY()) {
+				sleep(5000);
+				b = MouseInfo.getPointerInfo().getLocation();
+				while (x == (int) b.getX() && y == (int) b.getY()) {
 					doubleClick();
-					sleep(700);
-					clickEnter();
-					sleep(5000);
+					EnterPress();
+					sleep(6000);
+					EnterRelease();
 					b = MouseInfo.getPointerInfo().getLocation();
 				}
 			} else {
 				return;
 			}
-			
 
 		}
 
